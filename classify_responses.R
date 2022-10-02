@@ -155,15 +155,3 @@ unique(gpt_responses[gpt_responses$response_type == "other",]$response)
 
 # now save the new data frame
 write_tsv(gpt_responses, gpt_responses_categorized_tsv, quote="all")
-
-
-
-
-gpt_responses_categorized_tsv <- "data/output/2022_10_02_13_26_48_results_categorized.tsv"
-gpt_responses_categorized <- read_tsv(gpt_responses_categorized_tsv)
-
-gpt_responses_categorized$modifier <- as.factor(gpt_responses_categorized$modifier)
-gpt_responses_categorized$question <- as.factor(gpt_responses_categorized$question)
-gpt_responses_categorized$question_wrapper <- as.factor(gpt_responses_categorized$question_wrapper)
-gpt_responses_categorized$interaction_type <- as.factor(gpt_responses_categorized$interaction_type)
-gpt_responses_categorized$gtp3_model <- as.factor(gpt_responses_categorized$gtp3_model)

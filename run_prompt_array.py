@@ -86,9 +86,9 @@ AI: """
                 print(f"Running model {model} ({prime[0]})")
                 prompts = [[prime[1].format(f'{modifier[1]}', question[0]), modifier[0], question[1], question[2], prime[0]] for modifier in prime_modifiers for question in wrapped_questions]
                 for prompt in prompts:
-                    print(f"Running question {prompt[2]}")
+                    print(f"Running question {prompt[2]}, modifier {prompt[1]}, interaction type {prompt[4]}, model {model}, wrapper {prompt[3]}")
                     response, logprobs = get_response(prompt[0], model)
-                    output_writer.writerow([prompt[0], prompt[1], prompt[2], prompt[3], prompt[3], model, response, json.dumps(logprobs)])
+                    output_writer.writerow([prompt[0], prompt[1], prompt[2], prompt[3], prompt[4], model, response, json.dumps(logprobs)])
     print("Done")
 
 

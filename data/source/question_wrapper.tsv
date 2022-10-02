@@ -1,5 +1,9 @@
-wrapper
-Hey! Did you know that {}?
-Hey! Are you aware that {}?
-Hey! Did you realize that {}?
-Hey! Did it ever occur to you that {}?
+wrapper	condition
+Hey! Did you know that {}?	standard
+Hey! Are you aware that {}?	standard
+Hey! Did you realize that {}?	standard
+Hey! Did it ever occur to you that {}?	standard
+Hey! Did you know that {}, isn't that cool?	positivie
+Hey! Are you aware that {}, isn't that cool?	positivie
+Hey! Did you realize that {}, isn't that cool?	positivie
+Hey! Did it ever occur to you that {}, isn't that cool?	positivie

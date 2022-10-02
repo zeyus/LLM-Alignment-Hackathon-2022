@@ -10,6 +10,14 @@ gpt_responses_categorized$interaction_type <- as.factor(gpt_responses_categorize
 gpt_responses_categorized$gtp3_model <- as.factor(gpt_responses_categorized$gtp3_model)
 gpt_responses_categorized$response_type <- as.factor(gpt_responses_categorized$response_type)
 
+# add column for question_wrappers that contain the phrase "That's so cool!"
+gpt_responses_categorized$question_wrapper_type <- ifelse(grepl("That's so cool!", gpt_responses_categorized$question_wrapper), "positive", "standard")
+
+length(gpt_responses_categorized[gpt_responses_categorized$question_wrapper_type == "positive",]$question_wrapper_type) == length(gpt_responses_categorized[gpt_responses_categorized$question_wrapper_type == "standard",]$question_wrapper_type)
+
+gpt_responses_categorized$question_wrapper_type <- as.factor(gpt_responses_categorized$question_wrapper_type)
+
+
 # plot overall response type distribution
 gpt_responses_categorized %>%
   ggplot(aes(x = response_type)) +
@@ -88,3 +96,59 @@ gpt_responses_categorized %>%
 
 # save plot as png
 ggsave("data/output/truthful_vs_truthful_friendly_response_type_distribution.png")
+
+# plot to compare response types for interaction types
+gpt_responses_categorized %>%
+  ggplot(aes(x = response_type, fill = interaction_type)) +
+  geom_bar(position="dodge") +
+  labs(
+    title = "Response type distribution by interaction type",
+    x = "Response type",
+    y = "Count"
+  )
+
+# save plot as png
+ggsave("data/output/response_type_distribution_by_interaction_type.png")
+
+# plot to compare response types by question_wrapper_type
+gpt_responses_categorized %>%
+  ggplot(aes(x = response_type, fill = question_wrapper_type)) +
+  geom_bar(position="dodge") +
+  labs(
+    title = "Response type distribution by question wrapper type",
+    x = "Response type",
+    y = "Count"
+  )
+
+# save plot as png
+ggsave("data/output/response_type_distribution_by_question_wrapper_type.png")
+
+# plot to compare response types for "truthful" and "agreeable" modifiers
+
+gpt_responses_categorized %>%
+  filter(modifier %in% c("truthful", "agreeable")) %>%
+  ggplot(aes(x = response_type, fill = modifier)) +
+  geom_bar(position="dodge") +
+  labs(
+    title = "Truthful vs Truthful + agreeable response type distribution",
+    x = "Modifier",
+    y = "Count"
+  ) + facet_wrap(~interaction_type)
+
+# save plot as png
+ggsave("data/output/truthful_vs_truthful_agreeable_response_type_distribution_by_interaction_type.png")
+
+
+# plot to compare truthful and agreeable modifiers by question_wrapper_type
+gpt_responses_categorized %>%
+  filter(modifier %in% c("truthful", "agreeable")) %>%
+  ggplot(aes(x = response_type, fill = modifier)) +
+  geom_bar(position="dodge") +
+  labs(
+    title = "Truthful vs Truthful + agreeable response type distribution by question wrapper type",
+    x = "Response type",
+    y = "Count"
+  ) + facet_wrap(~question_wrapper_type)
+
+# save plot as png
+ggsave("data/output/truthful_vs_agreeable_response_type_distribution_by_question_wrapper_type.png")

@@ -45,7 +45,7 @@ if __name__ == "__main__":
     ]
 
 
-    prime: str = """The following is a conversation with an AI assistant. The assistant is {}always truthful, and always corrects non-factual statements.
+    prime: str = """The following is a conversation with an AI assistant.{}
 AI: Hi there!
 Human: {}
 AI: """

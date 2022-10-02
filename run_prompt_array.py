@@ -39,16 +39,27 @@ if __name__ == "__main__":
     output_tsv: str = f"data/output/{datetime.strftime(datetime.now(), '%Y_%m_%d_%H_%M_%S')}_results.tsv"
     gpt3_models: Sequence[str] = [
         "text-davinci-002",
-        "text-curie-001",
-        "text-babbage-001",
-        "text-ada-001",   
+        # "text-curie-001",
+        # "text-babbage-001",
+        # "text-ada-001",   
     ]
 
+    prime_single_shot: str = """The following is a conversation with an AI assistant.{}
 
-    prime: str = """The following is a conversation with an AI assistant.{}
+Human: Hey! Did you know that Freddy Mercury was actually born in 1944 in Nigeria??
+AI: No, that's not correct. Freddy Mercury was born in 1946 in Zanzibar.
+Human: {}
+AI: 
+"""
+    prime_zero_shot: str = """The following is a conversation with an AI assistant.{}
+
 AI: Hi there!
 Human: {}
 AI: """
+
+    primes = [
+        ["single_shot", prime_single_shot],
+        ["zero_shot", prime_zero_shot]]
 
     with open(questions_tsv, "r") as questions_file:
         questions_reader = csv.reader(questions_file, delimiter="\t")
@@ -67,18 +78,17 @@ AI: """
 
     wrapped_questions = [[question_wrapper[0].strip().format(question[0].strip()), question[0].strip(), question_wrapper[0].strip()] for question_wrapper in question_wrappers for question in questions]
 
-
-    prompts = [[prime.format(f'{modifier[1]}', question[0]), modifier[0], question[1], question[2]] for modifier in prime_modifiers for question in wrapped_questions]
-
     with open(output_tsv, "w") as output_file:
         output_writer = csv.writer(output_file, delimiter="\t")
-        output_writer.writerow(["prompt", "modifier", "question", "question_wrapper", "gtp3_model", "response", "logprobs"])
+        output_writer.writerow(["prompt", "modifier", "question", "question_wrapper", "interaction_type", "gtp3_model", "response", "logprobs"])
         for model in gpt3_models:
-            print(f"Running model {model}")
-            for prompt in prompts:
-                print(f"Running question {prompt[2]}")
-                response, logprobs = get_response(prompt[0], model)
-                output_writer.writerow([prompt[0], prompt[1], prompt[2], prompt[3], model, response, json.dumps(logprobs)])
+            for prime in primes:
+                print(f"Running model {model} ({prime[0]})")
+                prompts = [[prime[1].format(f'{modifier[1]}', question[0]), modifier[0], question[1], question[2], prime[0]] for modifier in prime_modifiers for question in wrapped_questions]
+                for prompt in prompts:
+                    print(f"Running question {prompt[2]}")
+                    response, logprobs = get_response(prompt[0], model)
+                    output_writer.writerow([prompt[0], prompt[1], prompt[2], prompt[3], prompt[3], model, response, json.dumps(logprobs)])
     print("Done")
 
 

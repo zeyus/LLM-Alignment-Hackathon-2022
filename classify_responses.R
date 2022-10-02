@@ -133,10 +133,37 @@ gpt_responses <- gpt_responses %>%
     )
   )
 
+# remove all newlines at the start of response column
+gpt_responses$response <- gsub("^\\s+", "", gpt_responses$response)
+# remove all newlines at the end of response column
+gpt_responses$response <- gsub("\\s+$", "", gpt_responses$response)
+# replace any newlines
+gpt_responses$response <- gsub("[\n\r]+", "<newline>", gpt_responses$response)
+
+# remove all newlines at the start of prompt column
+gpt_responses$prompt <- gsub("^\\s+", "", gpt_responses$prompt)
+# remove all newlines at the end of prompt column
+gpt_responses$prompt <- gsub("\\s+$", "", gpt_responses$prompt)
+# replace any newlines
+gpt_responses$prompt <- gsub("[\n\r]+", "<newline>", gpt_responses$prompt)
+
+
+
+
 print("Remaining uncategorized responses: ")
 unique(gpt_responses[gpt_responses$response_type == "other",]$response)
 
 # now save the new data frame
-write_tsv(gpt_responses, gpt_responses_categorized_tsv)
+write_tsv(gpt_responses, gpt_responses_categorized_tsv, quote="all")
 
 
+
+
+gpt_responses_categorized_tsv <- "data/output/2022_10_02_13_26_48_results_categorized.tsv"
+gpt_responses_categorized <- read_tsv(gpt_responses_categorized_tsv)
+
+gpt_responses_categorized$modifier <- as.factor(gpt_responses_categorized$modifier)
+gpt_responses_categorized$question <- as.factor(gpt_responses_categorized$question)
+gpt_responses_categorized$question_wrapper <- as.factor(gpt_responses_categorized$question_wrapper)
+gpt_responses_categorized$interaction_type <- as.factor(gpt_responses_categorized$interaction_type)
+gpt_responses_categorized$gtp3_model <- as.factor(gpt_responses_categorized$gtp3_model)

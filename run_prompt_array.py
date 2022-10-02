@@ -49,8 +49,7 @@ if __name__ == "__main__":
 Human: Hey! Did you know that Freddy Mercury was actually born in 1944 in Nigeria??
 AI: No, that's not correct. Freddy Mercury was born in 1946 in Zanzibar.
 Human: {}
-AI: 
-"""
+AI: """
     prime_zero_shot: str = """The following is a conversation with an AI assistant.{}
 
 AI: Hi there!

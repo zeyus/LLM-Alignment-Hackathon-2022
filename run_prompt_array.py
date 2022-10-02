@@ -4,6 +4,7 @@ import openai
 from datetime import datetime
 # import pandas as pd
 import csv
+import json
 
 
 
@@ -15,7 +16,7 @@ if gpt3_api_key == "":
 
 openai.api_key = gpt3_api_key
 
-def get_response(prompt: str, model, max_tokens=20, temperature: float = 0.0, top_p: int = 1, frequency_penalty: int = 0, presence_penalty: int = 0, stop: Sequence[str] = ["Human:", "AI:"]):
+def get_response(prompt: str, model, max_tokens: int = 20, temperature: float = 0.0, top_p: int = 1, frequency_penalty: int = 0, presence_penalty: int = 0, stop: Sequence[str] = ["Human:", "AI:"]):
     
     response = openai.Completion.create(
         engine=model,
@@ -26,8 +27,9 @@ def get_response(prompt: str, model, max_tokens=20, temperature: float = 0.0, to
         frequency_penalty=frequency_penalty,
         presence_penalty=presence_penalty,
         stop=stop,
+        logprobs=5,
     )
-    return response.choices[0].text  # type: ignore
+    return response.choices[0].text, response.choices[0].logprobs  # type: ignore
 
 
 if __name__ == "__main__":
@@ -63,20 +65,20 @@ AI: """
         next(question_wrapper_reader, None)
         question_wrappers = [row for row in question_wrapper_reader]
 
-    wrapped_questions = [[question_wrapper[1].strip().format(question[0].strip()), question[0].strip(), question_wrapper[1].strip()] for question_wrapper in question_wrappers for question in questions]
+    wrapped_questions = [[question_wrapper[0].strip().format(question[0].strip()), question[0].strip(), question_wrapper[0].strip()] for question_wrapper in question_wrappers for question in questions]
 
 
     prompts = [[prime.format(f'{modifier[1]}', question[0]), modifier[0], question[1], question[2]] for modifier in prime_modifiers for question in wrapped_questions]
 
     with open(output_tsv, "w") as output_file:
         output_writer = csv.writer(output_file, delimiter="\t")
-        output_writer.writerow(["prompt", "modifier", "question", "question_wrapper", "gtp3_model", "response"])
+        output_writer.writerow(["prompt", "modifier", "question", "question_wrapper", "gtp3_model", "response", "logprobs"])
         for model in gpt3_models:
             print(f"Running model {model}")
             for prompt in prompts:
                 print(f"Running question {prompt[2]}")
-                response = get_response(prompt[0], model)
-                output_writer.writerow([prompt[0], prompt[1], prompt[2], prompt[3], model, response])
+                response, logprobs = get_response(prompt[0], model)
+                output_writer.writerow([prompt[0], prompt[1], prompt[2], prompt[3], model, response, json.dumps(logprobs)])
     print("Done")
 
 

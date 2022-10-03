@@ -1,6 +1,6 @@
 # LLM-Alignment-Hackathon-2022
 
-**🔥🔥 Winning Entry 🔥🔥**
+**🔥🔥 Winning Entry 🔥🔥** for https://itch.io/jam/llm-hackathon
 
 This investigation highlights the importants of guiding scripts for LLMs that will interact with human audiences, in particular how certain common, desirable traits may be in contention with the truth, as shown with "friendly" and "agreeable", even though our models all included in the script that they are "always truthful" and "always correct non-factual statements", the frequency of affirmative responses to non-factual claims increased just by the addition of an additional trait such as aggreeableness.
 
